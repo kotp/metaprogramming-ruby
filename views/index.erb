@@ -1,0 +1,161 @@
+<div>
+<h2>1.0 What's Metaprogramming?</h2>
+<p><strong>Metaprogramming</strong> in Ruby is <span style="color:brown;">writing code that manipulates language constructs (like classes, modules, and instance variables) at runtime</span>. It is even possible to enter new Ruby code at runtime and execute the new code without restarting the program.</p>
+
+<h3>1.1 Ruby Object Model</h3>
+<p>All language constructs (like classes, modules, and instance variables) live together in a system called the <b>Object Model</b>.</p>
+<h4>1.1.1 Introspection</h4>
+<p>In Ruby it's possible to read information about a class or object at runtime. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
+<pre>
+# The code in the following class definition is executed immediately
+class Rubyist
+  # the code in the following method definition is executed later,
+  # when you eventually call the method
+  def what_does_he_do
+    @person = 'A Rubyist'
+    'Ruby programming'
+  end
+end
+an_object = Rubyist.new
+puts an_object.class #=> Rubyist
+puts an_object.class.instance_methods(false) #=> what_does_he_do
+an_object.what_does_he_do
+puts an_object.instance_variables #=> @person
+</pre>
+<h4>1.1.2 Open Classes</h4>
+<ul>
+<li>You can always re-open existing Ruby classes, even standard library classes such as <b>String</b> or <b>Array</b>, and modify them on the fly.</li>
+<li>There is a dark side to Open Classes: If you casually add bits and pieces of functionality to classes, you can end up with bugs like defining your own <b>replace( )</b> method and inadvertently overwriting the original <b>replace( )</b> method in the class <b>Array</b>. Some people would frown upon this kind of reckless patching of classes, and they would refer to the code with a derogatory name: They'd call it a <em>Monkeypatch</em>.</li>
+</ul>
+<h4>1.1.3 An object's Instance variables / Methods</h4>
+<ul>
+<li>Instance variables just <em>spring into existence when you assign them a value</em>, so you can have objects of the same class that carry different sets of instance variables.</li>
+<li>On the inside, an object simply contains its instance variables and a reference to its class. Thus, <span style="color:brown;">an object's instance variables live in the object itself, and an object's methods live in the object's class (where they're called the "instance methods" of the class)</span>. That's why objects of the same class share methods, but they don't share instance variables.</li>
+</ul>
+<h4>1.1.4 Classes</h4>
+<ul>
+<li>Classes themselves are nothing but objects.</li>
+<li>Since <span style="color:brown;">a class is an object</span>, everything that applies to objects also applies to classes. Classes, like any object, have their own class, being instances of a class called <b>Class</b>.</li>
+<li>Like any object, classes also have methods. The methods of an object are also the instance methods of its class. This means that the methods of a class are the instance methods of <b>Class</b>.</li>
+<li>All classes ultimately inherit from <b>Object</b>, which in turn inherits from <b>BasicObject</b>, the root of the Ruby class hierarchy.</li>
+<li>Class names are nothing but constants.</li>
+</ul>
+
+<h3>1.2 Anonymous class</h3>
+<p><span style="color:brown;">A singleton class is also known as an anonymous class, eigenclass, ghost class, metaclass or a uniclass</span>.</p>
+<p>When <em>we add a method to a specific object</em>, Ruby inserts a new, anonymous class into the inheritance hierarchy as a container to hold these types of methods. What's important to understand is that the anonymous class is a regular class which is hidden. It has no name and is not accessible through a constant like other classes. You can't instantiate a new object from it.</p>
+<pre>
+class &lt;&lt; foobar
+</pre>
+<p>Anytime one sees a strange looking class definition where the <b>class</b> keyword is followed by two less than symbols, you can be sure that a singleton class is being opened for the object to the right of those symbols.</p>
+
+<h3>1.3 Calling a method</h3>
+<p>When you call a method, Ruby does two things:</p>
+<ul>
+<li>It finds the method. This is a process called <em>method lookup</em>.</li>
+<li>It executes the method. To do that, Ruby needs something called <b>self</b>.</li>
+</ul>
+
+<h4>1.3.1 Method Lookup</h4>
+<p>When you call a method, Ruby looks into the object's class and finds the method there. We need to know about two new concepts: the <em>receiver</em> and the <em>ancestors chain</em>. The <em>receiver</em> is simply the object that you call a method on. For example, if you write <b>an_object.display()</b>, then <b>an_object</b> is the <em>receiver</em>. To understand the concept of an ancestors chain, just look at any Ruby class. Then imagine moving from the class into its superclass, then into the superclass's superclass, and so on until you reach <b>Object</b> (the default superclass) and then, finally, <b>BasicObject</b> (the root of the Ruby class hierarchy). The path of classes you just traversed is called the "ancestors chain" of the class (the ancestors chain also includes modules). Therefore, to find a method, Ruby goes in the receiver's class, and from there it climbs the ancestors chain until it finds the method. This behavior is also called the "one step to the right, then up" rule: <span style="color:brown;">Go one step to the right into the receiver's class, and then up the ancestors chain, until you find the method.</span> When you include a module in a class (or even in another module), Ruby creates an anonymous class that wraps the module, and inserts the anonymous class in the chain, just above the including class itself.</p>
+<h4>1.3.2 self</h4>
+<ul>
+<li>In Ruby, <b>self</b> is a special variable that always references the <span style="color:brown;">current object</span>.</li>
+<li><b>self</b> (current object) is the default receiver of method calls. This means that if I call a method and don't give an explicit receiver (I don't put something before the dot) then Ruby will always look into the object referenced by <b>self</b> for that method.</li>
+<li><b>self</b> (current object) is where instance variables are found. This means that if I write @var then it's going to go and look into the object referenced by self for that particular instance variable. It's to be noted that <span style="color:brown;">instance variables are not defined by a class, they are unrelated to sub-classing and the inheritance mechanism</span>.</li>
+</ul>
+
+<p>Thus, whenever we do a method call with an explicit receiver, <b>obj</b> as shown below, then Ruby goes through the following three steps:</p>
+<pre>obj.do_method(param)</pre>
+<ul>
+<li>switch <b>self</b> to receiver (obj)</li>
+<li>look up method (do_method(param)) in <b>self</b>'s class (<span style="color:brown;">objects do not store methods, only classes can</span>)</li>
+<li>invoke method (do_method(param))</li>
+</ul>
+
+<h3>1.4 Dynamic Methods</h3>
+<h4>1.4.1 send</h4>
+<p>The first argument to <b>send( )</b> is the message that you're sending to the object - that is, the name of a method. You can use a string or a symbol, but symbols are preferred. Any remaining arguments are simply passed on to the method.</p>
+<pre>
+class Rubyist
+  def welcome(*args)
+    "Welcome " + args.join(' ')
+  end
+end
+obj = Rubyist.new
+puts(obj.send(:welcome, "famous", "Rubyists"))   #=> Welcome famous Rubyists
+</pre>
+
+<p>With <b>send( )</b>, the name of the method that you want to call becomes just a regular argument. You can wait literally until the very last moment to decide which method to call, while the code is running. This technique is called <span style="color:brown;">Dynamic Dispatch</span>.</p>
+<p><span style="color:brown;">You can call any method with <b>send( )</b>, including private methods</span>.</p>
+
+<h4>1.4.2 Defining methods dynamically</h4>
+<p>You can define a method on the spot with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
+<pre>
+class Rubyist
+  define_method :hello do |my_arg|
+    my_arg
+  end
+end
+obj = Rubyist.new
+puts(obj.hello('Matz')) # => Matz
+</pre>
+
+<p>The above technique of defining a method at runtime is called a <em>Dynamic Method</em>.</p>
+
+<h4>1.4.3 method_missing</h4>
+<p>When Ruby does a method look-up and can't find a particular method, it calls a method named <b>method_missing( )</b> on the original receiver. The <b>method_missing( )</b> method is passed the symbol of the non-existent method, an array of the arguments that were passed in the original call and any block passed to the original method. Ruby knows that <b>method_missing( )</b> is there, because it's an instance method of <b>Kernel</b> that every object inherits. The <b>Kernel#method_missing( )</b> responds by raising a <b>NoMethodError</b>. Overriding <b>method_missing( )</b> allows you to call methods that don't really exist.</p>
+<pre>
+class Rubyist
+  def method_missing(m, *args, &block)
+    puts "Called #{m} with #{args.inspect} and #{block}"
+  end
+end
+Rubyist.new.anything #=> Called anything with [] and
+Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&lt;Proc:0x02efd664@tmp2.rb:7&gt;
+</pre>
+
+<h4>1.4.4 remove_method and undef_method</h4>
+<p>To remove existing methods, you can use the <b>remove_method</b> within the scope of a given class. If a method with the same name is defined for an ancestor of that class, the ancestor class method is <em>not removed</em>. The <b>undef_method</b>, by contrast, prevents the specified class from responding to a method call even if a method with the same name is defined in one of its ancestors.</p>
+
+<h4>1.4.5 Scope</h4>
+
+<h4>1.4.6 eval</h4>
+<p>The <b>eval()</b> method can be used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. The <b>eval()</b> method is a private method of <b>Object</b>. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
+
+<h4>1.4.6 instance_eval, module_eval, class_eval</h4>
+<p><b>instance_eval()</b>, <b>module_eval()</b> and <b>class_eval()</b> are special types of <b>eval()</b>.</p>
+<p>The <b>instance_eval()</b> is a public method and can be called from a specific object. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
+<p>According to the Metaprogramming Ruby book:</p>
+<blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. <span style="color:blue;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class. <span style="color:blue;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+
+<p>According to the Programming Ruby 1.9 book:</p>
+<blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:blue;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods</em>.</span></p></blockquote>
+
+<p>To add or retrieve the values of class variables from <em>inside a class</em>, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
+
+<p>To obtain a list of class variable names as an array of strings, we can use the <b>class_variables</b> method. You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>. One can also retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
+<p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime bu using <b>const_set</b>.</p>
+<p>To remove existing methods, you can use the <b>remove_method</b> within the scope of a given class. If a method with the same name is defined for an ancestor of that class, the ancestor class method is not removed. The <b>undef_method</b>, by contrast, prevents the specified class from responding to a method call even if a method with the same name is defined in one of its ancestors.</p>
+
+<h2>References</h2>
+<ul>
+<li>Metaprogramming Ruby - Publisher: The Pragmatic Programmers, Author: Paolo Perrotta.</li>
+<li>Programming Ruby 1.9 - Publisher: The Pragmatic Programmers, Author: Dave Thomas.</li>
+</ul>
+</div>
+<!-- Hit Tail (Invisible code) -->
+<script src="http://13043.hittail.com/mlt.js" type="text/javascript"></script>
+<!-- Hit Tail (Invisible code) -->
+
+<!-- Google Analytics code -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-59044-10");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics code ends -->
