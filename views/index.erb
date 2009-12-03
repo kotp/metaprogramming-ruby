@@ -1,5 +1,5 @@
 <div>
-<h1><img src="images/logo.gif" alt="logo" />Ruby Metaprogramming</h1>
+<h1><img src="images/ruby-adsense.gif" alt="logo" />Ruby Metaprogramming</h1>
 <p><strong>Metaprogramming</strong> in Ruby is <span style="color:brown;">writing code that manipulates language constructs (like classes, modules, and instance variables) at runtime</span>. It is even possible to enter new Ruby code at runtime and execute the new code without restarting the program.</p>
 
 <h3>1.1 Ruby Object Model</h3>
@@ -139,7 +139,7 @@ Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&l
 <p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime bu using <b>const_set</b>.</p>
 <p>To remove existing methods, you can use the <b>remove_method</b> within the scope of a given class. If a method with the same name is defined for an ancestor of that class, the ancestor class method is not removed. The <b>undef_method</b>, by contrast, prevents the specified class from responding to a method call even if a method with the same name is defined in one of its ancestors.</p>
 
-<h2>References</h2>
+<h3>References</h3>
 <ul>
 <li>Metaprogramming Ruby - Publisher: The Pragmatic Programmers, Author: Paolo Perrotta.</li>
 <li>Programming Ruby 1.9 - Publisher: The Pragmatic Programmers, Author: Dave Thomas.</li>
