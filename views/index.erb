@@ -107,7 +107,7 @@ puts(obj.hello('Matz')) # => Matz
 <p>When Ruby does a method look-up and can't find a particular method, it calls a method named <b>method_missing( )</b> on the original receiver. The <b>method_missing( )</b> method is passed the symbol of the non-existent method, an array of the arguments that were passed in the original call and any block passed to the original method. Ruby knows that <b>method_missing( )</b> is there, because it's an instance method of <b>Kernel</b> that every object inherits. The <b>Kernel#method_missing( )</b> responds by raising a <b>NoMethodError</b>. Overriding <b>method_missing( )</b> allows you to call methods that don't really exist.</p>
 <pre>
 class Rubyist
-  def method_missing(m, *args, &block)
+  def method_missing(m, *args, &amp;block)
     puts "Called #{m} with #{args.inspect} and #{block}"
   end
 end
@@ -128,10 +128,10 @@ Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&l
 <p>The <b>instance_eval()</b> is a public method and can be called from a specific object. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
 <p>According to the Metaprogramming Ruby book:</p>
 <blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
-<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. <span style="color:blue;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class. <span style="color:blue;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. <span style="color:brown;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class. <span style="color:brown;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
 
 <p>According to the Programming Ruby 1.9 book:</p>
-<blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:blue;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods</em>.</span></p></blockquote>
+<blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:brown;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods.</span></em></p></blockquote>
 
 <p>To add or retrieve the values of class variables from <em>inside a class</em>, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
 
