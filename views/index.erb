@@ -171,8 +171,8 @@ obj = Rubyist.new
 puts obj.send( :say_hello, 'Matz')
 </pre>
 
-<h4>1.4.2 Defining methods dynamically</h4>
-<p>The <b>Module#define_method( )</b> is a private instance method the class <b>Module</b>. You can define an instance method in the receiver with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
+<h4>1.4.2 define_method</h4>
+<p>The <b>Module#define_method( )</b> is a private instance method of the class <b>Module</b>. You can dynamically define an instance method in the receiver with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
 <pre>
 class Rubyist
   define_method :hello do |my_arg|
@@ -183,7 +183,7 @@ obj = Rubyist.new
 puts(obj.hello('Matz')) # => Matz
 </pre>
 
-<p>The above technique of defining a method at runtime is called a <em>Dynamic Method</em>.</p>
+<p>The above technique of defining a method at runtime is called a <span style="color:brown;"><em>Dynamic Method</em></span>.</p>
 
 <h4>1.4.3 method_missing</h4>
 <p>When Ruby does a method look-up and can't find a particular method, it calls a method named <b>method_missing( )</b> on the original receiver. The <b>method_missing( )</b> method is passed the symbol of the non-existent method, an array of the arguments that were passed in the original call and any block passed to the original method. Ruby knows that <b>method_missing( )</b> is there, because it's an instance method of <b>Kernel</b> that every object inherits. The <b>Kernel#method_missing( )</b> responds by raising a <b>NoMethodError</b>. Overriding <b>method_missing( )</b> allows you to call methods that don't really exist.</p>
