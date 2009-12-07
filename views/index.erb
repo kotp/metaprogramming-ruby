@@ -8,8 +8,8 @@
 
 <h3>1.1 Ruby Object Model</h3>
 <p>All language constructs (like classes, modules, and instance variables) live together in a system called the <b>Object Model</b>.</p>
-<h4>1.1.1 Introspection</h4>
-<p>In Ruby it's <span style="color:brown;">possible to read information about a class or object at runtime</span>. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
+<h4>1.1.1 Introspection or Reflection</h4>
+<p>In Ruby it's <span style="color:brown;">possible to read information about a class or object at <em>runtime</em></span>. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
 <pre>
 # The code in the following class definition is executed immediately
 class Rubyist
@@ -26,6 +26,16 @@ puts an_object.class.instance_methods(false) #=> what_does_he_do
 an_object.what_does_he_do
 puts an_object.instance_variables #=> @person
 </pre>
+<p>The <b>respond_to?</b> method is another example of <em>introspection</em> or <em>reflection</em>. You can determine in advance (before you ask the object to do something) whether the object knows how to handle the message you want to send it, by using the <b>respond_to?</b> method. This method exists for all objects; you can ask any object whether it responds to any message.</p>
+<pre>
+obj = Object.new
+if obj.respond_to?(:program)
+  obj.program
+else
+  puts "Sorry, the object doesn't understand the 'program' message."
+end
+</pre>
+
 <h4>1.1.2 Open Classes</h4>
 <p>In Ruby, <span style="color:brown;">classes are never closed</span>. You can always <a href="http://rubylearning.com/satishtalim/ruby_open_classes.html">re-open existing Ruby classes</a>, even standard library classes such as <b>String</b> or <b>Array</b>, and modify them on the fly.</p>
 <pre>
@@ -121,7 +131,8 @@ end
 <li>invoke method (do_method(param))</li>
 </ul>
 
-<h3>1.4 Dynamic Methods</h3>
+<h3>1.4 Useful methods in metaprogramming</h3>
+
 <h4>1.4.1 send</h4>
 <p><b>send( )</b> is an instance method of the <b>Object</b> class. The first argument to <b>send( )</b> is the message that you're sending to the object - that is, the name of a method. You can use a string or a symbol, but symbols are preferred. Any remaining arguments are simply passed on to the method.</p>
 <pre>
@@ -135,7 +146,30 @@ puts(obj.send(:welcome, "famous", "Rubyists"))   #=> Welcome famous Rubyists
 </pre>
 
 <p>With <b>send( )</b>, the name of the method that you want to call becomes just a regular argument. You can wait literally until the very last moment to decide which method to call, while the code is running. This technique is called <span style="color:brown;">Dynamic Dispatch</span>.</p>
+<pre>
+class Rubyist
+end  
+
+rubyist = Rubyist.new
+if rubyist.respond_to?(:also_railist)
+  puts rubyist.send(:also_railist)
+else
+  puts "No such information available"
+end
+</pre>
+<p>In the code above, if the <b>rubyist</b> object knows what to do with <b>:also_railist</b>, you hand the <b>rubyist</b> the message and let it do its thing.</p>
+
 <p><span style="color:brown;">You can call any method with <b>send( )</b>, including private methods</span>.</p>
+<pre>
+class Rubyist
+    private
+    def say_hello(name)
+       "#{name} rocks!!"
+    end
+end
+obj = Rubyist.new
+puts obj.send( :say_hello, 'Matz')
+</pre>
 
 <h4>1.4.2 Defining methods dynamically</h4>
 <p>The <b>Module#define_method( )</b> is a private instance method the class <b>Module</b>. You can define an instance method in the receiver with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
@@ -171,7 +205,7 @@ Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&l
 <h4>1.4.6 eval</h4>
 <p>The <b>eval()</b> method can be used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. The <b>eval()</b> method is a private method of <b>Object</b>. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
 
-<h4>1.4.6 instance_eval, module_eval, class_eval</h4>
+<h4>1.4.7 instance_eval, module_eval, class_eval</h4>
 <p><b>instance_eval()</b>, <b>module_eval()</b> and <b>class_eval()</b> are special types of <b>eval()</b>.</p>
 <p>The <b>instance_eval()</b> is a public method and can be called from a specific object. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
 <p>According to the Metaprogramming Ruby book:</p>
