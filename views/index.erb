@@ -5,7 +5,7 @@
 <h3>1.1 Ruby Object Model</h3>
 <p>All language constructs (like classes, modules, and instance variables) live together in a system called the <b>Object Model</b>.</p>
 <h4>1.1.1 Introspection</h4>
-<p>In Ruby it's possible to read information about a class or object at runtime. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
+<p>In Ruby it's <span style="color:brown;">possible to read information about a class or object at runtime</span>. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
 <pre>
 # The code in the following class definition is executed immediately
 class Rubyist
@@ -23,7 +23,7 @@ an_object.what_does_he_do
 puts an_object.instance_variables #=> @person
 </pre>
 <h4>1.1.2 Open Classes</h4>
-<p>In Ruby, classes are never closed. You can always <a href="http://rubylearning.com/satishtalim/ruby_open_classes.html">re-open existing Ruby classes</a>, even standard library classes such as <b>String</b> or <b>Array</b>, and modify them on the fly.</p>
+<p>In Ruby, <span style="color:brown;">classes are never closed</span>. You can always <a href="http://rubylearning.com/satishtalim/ruby_open_classes.html">re-open existing Ruby classes</a>, even standard library classes such as <b>String</b> or <b>Array</b>, and modify them on the fly.</p>
 <pre>
 class String  
   def writesize  
@@ -49,7 +49,8 @@ puts "Tell me my size!".writesize
 </ul>
 
 <h3>1.2 Anonymous class</h3>
-<p><span style="color:brown;">A singleton class is also known as an anonymous class, eigenclass, ghost class, metaclass or a uniclass</span>.</p>
+<p><span style="color:brown;">An anonymous class is also known as a singleton class, eigenclass, ghost class, metaclass or a uniclass</span>.</p>
+<p><em>Each object in Ruby also has its own metaclass, a class that can have methods, but is only attached to the object itself</em>.</p>
 <p>When <em>we add a method to a specific object</em>, Ruby inserts a new, anonymous class into the inheritance hierarchy as a container to hold these types of methods. What's important to understand is that the anonymous class is a regular class which is hidden. It has no name and is not accessible through a constant like other classes. You can't instantiate a new object from it.</p>
 <pre>
 class &lt;&lt; foobar
