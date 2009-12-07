@@ -123,7 +123,7 @@ end
 
 <h3>1.4 Dynamic Methods</h3>
 <h4>1.4.1 send</h4>
-<p>The first argument to <b>send( )</b> is the message that you're sending to the object - that is, the name of a method. You can use a string or a symbol, but symbols are preferred. Any remaining arguments are simply passed on to the method.</p>
+<p><b>send( )</b> is an instance method of the <b>Object</b> class. The first argument to <b>send( )</b> is the message that you're sending to the object - that is, the name of a method. You can use a string or a symbol, but symbols are preferred. Any remaining arguments are simply passed on to the method.</p>
 <pre>
 class Rubyist
   def welcome(*args)
@@ -138,7 +138,7 @@ puts(obj.send(:welcome, "famous", "Rubyists"))   #=> Welcome famous Rubyists
 <p><span style="color:brown;">You can call any method with <b>send( )</b>, including private methods</span>.</p>
 
 <h4>1.4.2 Defining methods dynamically</h4>
-<p>You can define a method on the spot with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
+<p>The <b>Module#define_method( )</b> is a private instance method the class <b>Module</b>. You can define an instance method in the receiver with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
 <pre>
 class Rubyist
   define_method :hello do |my_arg|
@@ -189,8 +189,9 @@ Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&l
 
 <h3>References</h3>
 <ul>
-<li>Metaprogramming Ruby - Publisher: The Pragmatic Programmers, Author: Paolo Perrotta.</li>
-<li>Programming Ruby 1.9 - Publisher: The Pragmatic Programmers, Author: Dave Thomas.</li>
+<li><a href="http://pragprog.com/titles/ppmetr/metaprogramming-ruby">Metaprogramming Ruby</a> - Publisher: The Pragmatic Programmers, Author: Paolo Perrotta.</li>
+<li><a href="http://pragprog.com/titles/ruby3/programming-ruby-1-9">Programming Ruby 1.9</a> - Publisher: The Pragmatic Programmers, Author: Dave Thomas.</li>
+<li><a href="http://www.sapphiresteel.com/The-Book-Of-Ruby">The Book Of Ruby</a> - Author: Huw Collingbourne.</li>
 <li><a href="http://yehudakatz.com/2009/11/15/metaprogramming-in-ruby-its-all-about-the-self/">Metaprogramming in Ruby: It’s All About the Self</a>.</li>
 </ul>
 <p class="footer">All content copyright &#169; 2009, RubyLearning</p>
