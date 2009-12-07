@@ -199,6 +199,36 @@ Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&l
 
 <h4>1.4.4 remove_method and undef_method</h4>
 <p>To remove existing methods, you can use the <b>remove_method</b> within the scope of a given class. If a method with the same name is defined for an ancestor of that class, the ancestor class method is <em>not removed</em>. The <b>undef_method</b>, by contrast, prevents the specified class from responding to a method call even if a method with the same name is defined in one of its ancestors.</p>
+<pre>
+class Rubyist
+  def method_missing(m, *args, &block)
+    puts "Method Missing: Called #{m} with #{args.inspect} and #{block}"
+  end
+  
+  def hello
+    puts "Hello from class Rubyist"
+  end
+end
+
+class IndianRubyist &lt; Rubyist
+  def hello
+    puts "Hello from class IndianRubyist"
+  end
+end
+
+obj = IndianRubyist.new
+obj.hello #=> Hello from class IndianRubyist
+
+class IndianRubyist
+  remove_method :hello  # removed from IndianRubyist, but still in Rubyist
+end
+obj.hello #=> Hello from class Rubyist
+
+class IndianRubyist
+  undef_method :hello   # prevent any calls to 'hello'
+end
+obj.hello #=> Method Missing: Called hello with [] and 
+</pre>
 
 <h4>1.4.5 Scope</h4>
 
