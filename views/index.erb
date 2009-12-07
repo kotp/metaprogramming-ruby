@@ -52,13 +52,48 @@ puts "Tell me my size!".writesize
 </ul>
 
 <h3>1.2 Anonymous class</h3>
-<p><span style="color:brown;">An anonymous class is also known as a singleton class, eigenclass, ghost class, metaclass or a uniclass</span>.</p>
+<p><span style="color:brown;">An anonymous class is also known as a singleton class, eigenclass, ghost class, metaclass or an uniclass</span>.</p>
 <p><em>Each object in Ruby has its own anonymous class, a class that can have methods, but is only attached to the object itself</em>: When <em>we add a method to a specific object</em>, Ruby inserts a new, anonymous class into the inheritance hierarchy as a container to hold these types of methods. What's important to understand is that the anonymous class is a regular class which is <em>hidden</em>. It has no name and is not accessible through a constant like other classes. You can't instantiate a new object from it.</p>
-<p>Here are some ways by which we can define an anonymous class:</p>
+<p>Here are some ways by which you can define an anonymous class:</p>
+
 <pre>
-class &lt;&lt; foobar
+# 1
+class Rubyist
+  def self.who
+    "Geek"
+  end
+end
+
+# 2
+class Rubyist
+  class &lt;&lt; self
+    def who
+      "Geek"
+    end
+  end
+end
+
+# 3
+def Rubyist.who
+  "Geek"
+end
+
+#4 We talk about this later on
+Rubyist.instance_eval do
+  def who
+    "Geek"
+  end
+end
+
+# 5
+class &lt;&lt; Rubyist
+  def who
+    "Geek"
+  end
+end
 </pre>
-<p>Anytime one sees a strange looking class definition where the <b>class</b> keyword is followed by two less than symbols, you can be sure that an anonymous class is being opened for the object to the right of those symbols.</p>
+<p>All five snippets above, define a <b>Rubyist.who</b> that returns <b>Geek</b>.</p>
+<p>Anytime one sees a strange looking class definition (# 5 above) where the <b>class</b> keyword is followed by two less than symbols, you can be sure that an anonymous class is being opened for the object to the right of those symbols.</p>
 
 <h3>1.3 Calling a method</h3>
 <p>When you call a method, Ruby does two things:</p>
