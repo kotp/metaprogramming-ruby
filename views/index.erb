@@ -262,7 +262,7 @@ end
 </pre>
 <p>According to the Metaprogramming Ruby book:</p>
 <blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
-<p><b>instance_eval</b> can also be used to add <em>class methods</em> as shown below:</p>
+<p><b>instance_eval</b> can also be used to <span style="color:brown;">add <em>class methods</em></span> as shown below:</p>
 <pre>
 class Rubyist
 end
@@ -276,7 +276,7 @@ puts Rubyist.who #=> Geek
 
 <h5>1.4.7.2 module_eval, class_eval</h5>
 <p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. 
-<p><span style="color:brown;">The <b>module_eval</b> and <b>class_eval</b> methods can be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods can be used to <span style="color:brown;">add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
 <pre>
 class Rubyist
   @@geek = "Ruby's Matz"
@@ -284,11 +284,23 @@ end
 puts Rubyist.class_eval("@@geek") # => Ruby's Matz
 </pre>
 
-<p><span style="color:brown;">Along with the <b>define_method()</b>, <b>module_eval</b> and <b>class_eval</b> can also be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods can also be used to <span style="color:brown;">add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class.</p>
+<pre>
+class Rubyist
+end
+Rubyist.class_eval do
+  def who
+    "Geek"
+  end
+end
+obj = Rubyist.new
+puts obj.who #=> Geek
+</pre>
 
 <p>According to the Programming Ruby 1.9 book:</p>
 <blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:brown;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods.</span></em></p></blockquote>
 
+<h4>1.4.8 class_variable_get, class_variable_set</h4>
 <p>To add or retrieve the values of class variables from <em>inside a class</em>, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
 
 <p>To obtain a list of class variable names as an array of strings, we can use the <b>class_variables</b> method. You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>. One can also retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
