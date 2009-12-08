@@ -258,7 +258,10 @@ end
 </pre>
 <p>According to the Metaprogramming Ruby book:</p>
 <blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
-<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. <span style="color:brown;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class. <span style="color:brown;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. 
+<p><span style="color:brown;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+
+<p><span style="color:brown;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class.</p>
 
 <p>According to the Programming Ruby 1.9 book:</p>
 <blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:brown;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods.</span></em></p></blockquote>
