@@ -21,10 +21,10 @@ class Rubyist
   end
 end
 an_object = Rubyist.new
-puts an_object.class #=> Rubyist
-puts an_object.class.instance_methods(false) #=> what_does_he_do
+puts an_object.class # => Rubyist
+puts an_object.class.instance_methods(false) # => what_does_he_do
 an_object.what_does_he_do
-puts an_object.instance_variables #=> @person
+puts an_object.instance_variables # => @person
 </pre>
 <p>The <b>respond_to?</b> method is another example of <em>introspection</em> or <em>reflection</em>. You can determine in advance (before you ask the object to do something) whether the object knows how to handle the message you want to send it, by using the <b>respond_to?</b> method. This method exists for all objects; you can ask any object whether it responds to any message.</p>
 <pre>
@@ -98,7 +98,7 @@ Rubyist.instance_eval do
     "Geek"
   end
 end
-puts Rubyist.who #=> Geek
+puts Rubyist.who # => Geek
 
 # 5
 class &lt;&lt; Rubyist
@@ -145,7 +145,7 @@ class Rubyist
   end
 end
 obj = Rubyist.new
-puts(obj.send(:welcome, "famous", "Rubyists"))   #=> Welcome famous Rubyists
+puts(obj.send(:welcome, "famous", "Rubyists"))   # => Welcome famous Rubyists
 </pre>
 
 <p>With <b>send( )</b>, the name of the method that you want to call becomes just a regular argument. You can wait literally until the very last moment to decide which method to call, while the code is running. This technique is called <span style="color:brown;">Dynamic Dispatch</span>.</p>
@@ -196,8 +196,8 @@ class Rubyist
     puts "Called #{m} with #{args.inspect} and #{block}"
   end
 end
-Rubyist.new.anything #=> Called anything with [] and
-Rubyist.new.anything(3, 4) { something } #=> Called anything with [3, 4] and #&lt;Proc:0x02efd664@tmp2.rb:7&gt;
+Rubyist.new.anything # => Called anything with [] and
+Rubyist.new.anything(3, 4) { something } # => Called anything with [3, 4] and #&lt;Proc:0x02efd664@tmp2.rb:7&gt;
 </pre>
 
 <h4>1.4.4 remove_method and undef_method</h4>
@@ -220,17 +220,17 @@ class IndianRubyist &lt; Rubyist
 end
 
 obj = IndianRubyist.new
-obj.hello #=> Hello from class IndianRubyist
+obj.hello # => Hello from class IndianRubyist
 
 class IndianRubyist
   remove_method :hello  # removed from IndianRubyist, but still in Rubyist
 end
-obj.hello #=> Hello from class Rubyist
+obj.hello # => Hello from class Rubyist
 
 class IndianRubyist
   undef_method :hello   # prevent any calls to 'hello'
 end
-obj.hello #=> Method Missing: Called hello with [] and 
+obj.hello # => Method Missing: Called hello with [] and 
 </pre>
 
 <h4>1.4.5 Scope</h4>
@@ -239,7 +239,7 @@ obj.hello #=> Method Missing: Called hello with [] and
 <p>The module <b>Kernel</b> has the <b>eval()</b> method and is used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
 <pre>
 str = "Hello"
-puts eval("str + ' Rubyist'") #=> "Hello Rubyist"
+puts eval("str + ' Rubyist'") # => "Hello Rubyist"
 </pre>
 
 <h4>1.4.7 instance_eval, module_eval, class_eval</h4>
@@ -271,7 +271,7 @@ Rubyist.instance_eval do
     "Geek"
   end
 end
-puts Rubyist.who #=> Geek
+puts Rubyist.who # => Geek
 </pre>
 
 <h5>1.4.7.2 module_eval, class_eval</h5>
@@ -294,16 +294,40 @@ Rubyist.class_eval do
   end
 end
 obj = Rubyist.new
-puts obj.who #=> Geek
+puts obj.who # => Geek
 </pre>
 
 <p>According to the Programming Ruby 1.9 book:</p>
 <blockquote><p><em>It might be helpful to remember that, when defining methods, <b>class_eval</b> and <b>instance_eval</b> have precisely the wrong names: <span style="color:brown;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods.</span></em></p></blockquote>
 
 <h4>1.4.8 class_variable_get, class_variable_set</h4>
-<p>To add or retrieve the values of class variables from <em>inside a class</em>, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
+<p>To add or retrieve the values of class variables, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
+<pre>
+class Rubyist
+  @@geek = "Ruby's Matz"
+end
+Rubyist.class_variable_set(:@@geek, 'Matz rocks!')
+puts Rubyist.class_variable_get(:@@geek) # => Matz rocks!
+</pre>
 
-<p>To obtain a list of class variable names as an array of strings, we can use the <b>class_variables</b> method. You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>. One can also retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
+<h4>1.4.9 class_variables</h4>
+<p>To obtain a list of class variable names as an array of strings, we can use the <b>class_variables</b> method.</p>
+<pre>
+class Rubyist
+  @@geek = "Ruby's Matz"
+  @@country = "USA"
+end
+
+class Child < Rubyist
+  @@city = "Nashville"
+end
+print Rubyist.class_variables # => [:@@geek, :@@country]
+puts
+p Child.class_variables # => [:@@city]
+</pre>
+<p>You will observe from the program output that class variables are not shared with child classes.</p>
+
+<p>You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>. One can also retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
 <p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime bu using <b>const_set</b>.</p>
 
 <h3>References</h3>
