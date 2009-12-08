@@ -233,11 +233,29 @@ obj.hello #=> Method Missing: Called hello with [] and
 <h4>1.4.5 Scope</h4>
 
 <h4>1.4.6 eval</h4>
-<p>The <b>eval()</b> method can be used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. The <b>eval()</b> method is a private method of <b>Object</b>. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
+<p>The module <b>Kernel</b> has the <b>eval()</b> method and is used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
+<pre>
+str = "Hello"
+puts eval("str + ' Rubyist'") #=> "Hello Rubyist"
+</pre>
 
 <h4>1.4.7 instance_eval, module_eval, class_eval</h4>
 <p><b>instance_eval()</b>, <b>module_eval()</b> and <b>class_eval()</b> are special types of <b>eval()</b>.</p>
-<p>The <b>instance_eval()</b> is a public method and can be called from a specific object. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
+<p>The class <b>Object</b> has an <b>instance_eval()</b> public method which can be called from a specific object. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
+<pre>
+class Rubyist
+  def initialize
+    @geek = "Matz"
+  end
+end
+obj = Rubyist.new
+# instance_eval can access obj's private methods 
+# and instance variables
+obj.instance_eval do
+  puts self # => #&lt;Rubyist:0x2ef83d0&gt;
+  puts @geek # => Matz
+end
+</pre>
 <p>According to the Metaprogramming Ruby book:</p>
 <blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
 <p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. <span style="color:brown;">Along with the <b>define_method</b> method, <b>module_eval</b> and <b>class_eval</b> can be used to add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class. <span style="color:brown;">The <b>module_eval</b> and <b>class_eval</b> methods can also be used to add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
