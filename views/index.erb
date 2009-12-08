@@ -327,8 +327,34 @@ p Child.class_variables # => [:@@city]
 </pre>
 <p>You will observe from the program output that class variables are not shared with child classes.</p>
 
-<p>You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>. One can also retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
-<p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime bu using <b>const_set</b>.</p>
+<h4>1.4.10 instance_variable_get, instance_variable_set</h4>
+<p>One can retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
+<pre>
+class Rubyist
+  def initialize(p1, p2)
+    @geek, @country = p1, p2
+  end
+end
+obj = Rubyist.new('Matz', 'USA')
+puts obj.instance_variable_get(:@geek) # => Matz
+puts obj.instance_variable_get(:@country) # => USA
+</pre>
+<p>You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>.</p>
+<pre>
+class Rubyist
+  def initialize(p1, p2)
+    @geek, @country = p1, p2
+  end
+end
+obj = Rubyist.new('Matz', 'USA')
+puts obj.instance_variable_get(:@geek) # => Matz
+puts obj.instance_variable_get(:@country) # => USA
+obj.instance_variable_set(:@country, 'Japan')
+puts obj.inspect # => #&lt;Rubyist:0x2ef8038 @country="Japan", @geek="Matz"&gt;
+</pre>
+
+<h4>1.4.11 const_get, const_set</h4>
+<p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime by using <b>const_set</b>.</p>
 
 <h3>References</h3>
 <ul>
