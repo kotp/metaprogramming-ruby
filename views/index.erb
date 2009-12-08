@@ -90,12 +90,15 @@ def Rubyist.who
   "Geek"
 end
 
-#4 We talk about this later on
+#4 We talk about this later (refer: 1.4.7.1)
+class Rubyist
+end
 Rubyist.instance_eval do
   def who
     "Geek"
   end
 end
+puts Rubyist.who #=> Geek
 
 # 5
 class &lt;&lt; Rubyist
@@ -259,6 +262,17 @@ end
 </pre>
 <p>According to the Metaprogramming Ruby book:</p>
 <blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
+<p><b>instance_eval</b> can also be used to add <em>class methods</em> as shown below:</p>
+<pre>
+class Rubyist
+end
+Rubyist.instance_eval do
+  def who
+    "Geek"
+  end
+end
+puts Rubyist.who #=> Geek
+</pre>
 
 <h5>1.4.7.2 module_eval, class_eval</h5>
 <p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. 
