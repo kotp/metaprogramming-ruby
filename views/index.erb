@@ -355,6 +355,23 @@ puts obj.inspect # => #&lt;Rubyist:0x2ef8038 @country="Japan", @geek="Matz"&gt;
 
 <h4>1.4.11 const_get, const_set</h4>
 <p>One can similarly set and get constants using <b>const_set</b> and <b>const_get</b>. As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime by using <b>const_set</b>.</p>
+<pre>
+# Let us call our new class 'Rubyist'
+# we could have prompted the user for a class name
+class_name = "rubyist".capitalize
+Object.const_set(class_name, Class.new)
+# Let us create a method 'who'
+# we could have prompted the user for a method name
+class_name = Object.const_get(class_name)
+puts class_name # => Rubyist
+class_name.class_eval do
+  define_method :who do |my_arg|
+    my_arg
+  end
+end
+obj = class_name.new
+puts obj.who('Matz') # => Matz
+</pre>
 
 <h3>References</h3>
 <ul>
