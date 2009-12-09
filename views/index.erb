@@ -32,7 +32,7 @@ class String
 end  
 puts "Tell me my size!".writesize
 </pre>
-<p>There is a dark side to Open Classes: If you casually add bits and pieces of functionality to classes, you can end up with bugs like defining your own <b>replace( )</b> method and inadvertently overwriting the original <b>replace( )</b> method in the class <b>Array</b>. Some people would frown upon this kind of reckless patching of classes, and they would refer to the code with a derogatory name: They'd call it a <em>Monkeypatch</em>.</p>
+<p><b>Be careful with Open Classes</b>: If you casually add bits and pieces of functionality to classes, you can end up with bugs like, for example, defining your own <b>capitalize( )</b> method and inadvertently overwriting the original <b>capitalize( )</b> method in the class <b>String</b>.</p>
 
 <h4>1.1.4 Anonymous class</h4>
 <p><span style="color:brown;">An anonymous class is also known as a singleton class, eigenclass, ghost class, metaclass or an uniclass</span>.</p>
