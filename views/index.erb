@@ -360,8 +360,7 @@ puts Float.const_get(:MIN) # => 2.2250738585072e-308
 <pre>
 class Rubyist
 end
-Rubyist.const_set("PI", 22.0/7.0)
-puts Rubyist.const_get(:PI) # => 3.14285714285714
+puts Rubyist.const_set("PI", 22.0/7.0) # => 3.14285714285714
 </pre>
 
 <p>As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime by using <b>const_set</b>.</p>
@@ -383,7 +382,26 @@ obj = class_name.new
 puts obj.who('Matz') # => Matz
 </pre>
 
-<h4>1.4 Scope</h4>
+<h4>1.4 Bindings</h4>
+<p>Entities like local variables, instance variables, self. . . are basically <em>names bound to objects</em>. We call them <b>bindings</b>.</p>
+
+<h4>1.5 Ruby Blocks and Bindings</h4>
+<p>A Ruby block contains both the code and a set of bindings. When you define a block, it simply grabs the bindings that are there at that moment, then it carries those bindings along when you pass the block into a method.</p>
+<pre>
+def who
+  person = "Matz"
+  yield("rocks")
+end
+person = "Matsumoto"
+who do |y| 
+  puts("#{person}, #{y} the world") # => Matsumoto, rocks the world
+  city = "Tokyo"
+end
+# puts city # => undefined local variable or method 'city' for main:Object (NameError)
+</pre>
+<p>Observe that the code in the block sees the <b>person</b> variable that was around when the block was defined, not the method’s <b>person</b> variable, that is not visible at all in the block. Hence a block captures the local bindings and carries them along with it. You can also define additional bindings inside the block, but they disappear after the block ends.</p>
+
+<h4>1.6 Scope</h4>
 
 <h3>References</h3>
 <ul>
