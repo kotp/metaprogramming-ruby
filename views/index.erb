@@ -6,11 +6,9 @@
 <h3>Ruby Metaprogramming</h3>
 <p><strong>Metaprogramming</strong> in Ruby is <span style="color:brown;">writing code that manipulates language constructs (like classes, modules, and instance variables) at runtime</span>. It is even possible to enter new Ruby code at runtime and execute the new code without restarting the program.</p>
 
-<h3>1.1 Ruby Object Model</h3>
-<p>All language constructs (like classes, modules, and instance variables) live together in a system called the <b>Object Model</b>.</p>
-
+<h3>1.1 Instance variables, Methods and Classes</h3>
 <h4>1.1.1 An object's Instance variables / Methods</h4>
-<p>Instance variables just <em>spring into existence when you assign them a value</em>, so you can have objects of the same class that carry different sets of instance variables.</p?
+<p>Instance variables just <em>spring into existence when you assign them a value</em>, so you can have objects of the same class that carry different sets of instance variables.</p>
 <p>On the inside, an object simply contains its instance variables and a reference to its class. Thus, <span style="color:brown;">an object's instance variables live in the object itself, and an object's methods live in the object's class (where they're called the "instance methods" of the class)</span>. That's why objects of the same class share methods, but they don't share instance variables.</p>
 
 <h4>1.1.2 Classes</h4>
@@ -95,7 +93,7 @@ end
 
 <h4>1.2.2 self</h4>
 <ul>
-<li>In Ruby, <b>self</b> is a special variable that always references the <span style="color:brown;">current object</span>.</li>
+<li>In Ruby, <b><a href="http://rubylearning.com/satishtalim/ruby_self.html">self</a></b> is a special variable that always references the <span style="color:brown;">current object</span>.</li>
 <li><b>self</b> (current object) is the default receiver of method calls. This means that if I call a method and don't give an explicit receiver (I don't put something before the dot) then Ruby will always look into the object referenced by <b>self</b> for that method.</li>
 <li><b>self</b> (current object) is where instance variables are found. This means that if I write @var then it's going to go and look into the object referenced by self for that particular instance variable. It's to be noted that <span style="color:brown;">instance variables are not defined by a class, they are unrelated to sub-classing and the inheritance mechanism</span>.</li>
 </ul>
@@ -108,7 +106,7 @@ end
 <li>invoke method (do_method(param))</li>
 </ul>
 
-<h3>1.3 Useful methods in metaprogramming</h3>
+<h3>1.3 Useful methods in Ruby Metaprogramming</h3>
 <h4>1.3.1 Introspection or Reflection</h4>
 <p>In Ruby it's <span style="color:brown;">possible to read information about a class or object at <em>runtime</em></span>. We could use some of the methods like <b>class()</b>, <b>instance_methods()</b>, <b>instance_variables()</b> to do that. For example:</p>
 <pre>
@@ -149,7 +147,7 @@ obj = Rubyist.new
 puts(obj.send(:welcome, "famous", "Rubyists"))   # => Welcome famous Rubyists
 </pre>
 
-<p>With <b>send( )</b>, the name of the method that you want to call becomes just a regular argument. You can wait literally until the very last moment to decide which method to call, while the code is running. This technique is called <span style="color:brown;">Dynamic Dispatch</span>.</p>
+<p>With <b>send( )</b>, the name of the method that you want to call becomes just a regular argument. You can wait literally until the very last moment to decide which method to call, while the code is running.</p>
 <pre>
 class Rubyist
 end  
@@ -186,7 +184,6 @@ end
 obj = Rubyist.new
 puts(obj.hello('Matz')) # => Matz
 </pre>
-<p>The above technique of defining a method at runtime is called a <span style="color:brown;"><em>Dynamic Method</em></span>.</p>
 
 <h4>1.3.4 method_missing</h4>
 <p>When Ruby does a method look-up and can't find a particular method, it calls a method named <b>method_missing( )</b> on the original receiver. The <b>method_missing( )</b> method is passed the symbol of the non-existent method, an array of the arguments that were passed in the original call and any block passed to the original method. Ruby knows that <b>method_missing( )</b> is there, because it's an instance method of <b>Kernel</b> that every object inherits. The <b>Kernel#method_missing( )</b> responds by raising a <b>NoMethodError</b>. Overriding <b>method_missing( )</b> allows you to call methods that don't really exist.</p>
@@ -234,7 +231,7 @@ obj.hello # => Method Missing: Called hello with [] and
 </pre>
 
 <h4>1.3.6 eval</h4>
-<p>The module <b>Kernel</b> has the <b>eval()</b> method and is used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <em><b>eval()</b> is now considered a method of last resort</em>.</p>
+<p>The module <b>Kernel</b> has the <b>eval()</b> method and is used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <span style="color:brown;"><em><b>eval()</b> is now considered a method of last resort</em></span>.</p>
 <pre>
 str = "Hello"
 puts eval("str + ' Rubyist'") # => "Hello Rubyist"
