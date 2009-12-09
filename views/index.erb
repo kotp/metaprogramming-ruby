@@ -352,6 +352,17 @@ puts obj.inspect # => #&lt;Rubyist:0x2ef8038 @country="Japan", @geek="Matz"&gt;
 
 <h4>1.3.11 const_get, const_set</h4>
 <p>One can similarly get and set constants using <b>const_get</b> and <b>const_set</b>.</p>
+<p><b>const_get</b> returns the value of the named constant, as shown below:</p>
+<pre>
+puts Float.const_get(:MIN) # => 2.2250738585072e-308
+</pre>
+<p><b>const_set</b> sets the named constant to the given object, returning that object. It creates a new constant if no constant with the given name previously existed, as shown below:</p>
+<pre>
+class Rubyist
+end
+Rubyist.const_set("PI", 22.0/7.0)
+puts Rubyist.const_get(:PI) # => 3.14285714285714
+</pre>
 
 <p>As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime by using <b>const_set</b>.</p>
 <pre>
