@@ -1,9 +1,9 @@
 <div>
 <h1><img src="images/logo.gif" alt="logo" />Metaprogramming</h1>
-<h2>Preamble</h2>
+<h2>0.0 Preamble</h2>
 <p>These study notes should be used along with Satoshi Asakawa's excellent course on <a href="http://ruby-metaprogramming.heroku.com/">Ruby Metaprogramming</a>.</p>
 
-<h2>Ruby Metaprogramming</h2>
+<h2>1.0 Ruby Metaprogramming</h2>
 <p><strong>Metaprogramming</strong> in Ruby is <span style="color:brown;">writing code that manipulates language constructs (like classes, modules, and instance variables) at runtime</span>. It is even possible to enter new Ruby code at runtime and execute the new code without restarting the program.</p>
 
 <h2>1.1 Instance variables, Methods and Classes</h2>
@@ -256,8 +256,7 @@ obj.instance_eval do
   puts @geek # => Matz
 end
 </pre>
-<p>According to the Metaprogramming Ruby book:</p>
-<blockquote><p><em>You can call the block that you pass to <b>instance_eval( )</b> a <span style="color:brown;">Context Probe</span>, because it's like a snippet of code that you dip inside an object to do something in there. With a Context Probe, you can wreak havoc on encapsulation! No data is private data anymore.</em></p></blockquote>
+<p><em>The block that you pass to <b>instance_eval( )</b>helps you dip inside an object to do something in there. You can wreak havoc on encapsulation! No data is private data anymore.</em></p>
 <p><b>instance_eval</b> can also be used to <span style="color:brown;">add <em>class methods</em></span> as shown below:</p>
 <pre>
 class Rubyist
@@ -397,7 +396,7 @@ who do |y|
 end
 # puts city # => undefined local variable or method 'city' for main:Object (NameError)
 </pre>
-<p>Observe that the code in the block sees the <b>person</b> variable that was around when the block was defined, not the method’s <b>person</b> variable, that is not visible at all in the block. Hence a block captures the local bindings and carries them along with it. You can also define additional bindings inside the block, but they disappear after the block ends.</p>
+<p>Observe that the code in the block sees the <b>person</b> variable that was around when the block was defined, <em>not the</em> method’s <b>person</b> variable. Hence a block captures the local bindings and carries them along with it. You can also define additional bindings inside the block, but they disappear after the block ends.</p>
 
 <h2>1.6 Scope</h2>
 
