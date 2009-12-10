@@ -523,9 +523,9 @@ class DataWrapper
         end
       end
       define_method(:to_s) do
-        str = "<#{self.class}:"
-        names.each {|name| str << " #{name}=#{self.send(name)}" }
-        str + ">"
+        str = "&lt;#{self.class}:"
+        names.each {|name| str &lt;&lt; " #{name}=#{self.send(name)}" }
+        str + "&gt;"
       end
       alias_method :inspect, :to_s
     end
@@ -555,9 +555,9 @@ class DataWrapper
         end
       end
       define_method(:to_s) do
-        str = "<#{self.class}:"
-        names.each {|name| str << " #{name}=#{self.send(name)}" }
-        str + ">"
+        str = "&lt;#{self.class}:"
+        names.each {|name| str &lt;&lt; " #{name}=#{self.send(name)}" }
+        str + "&gt;"
       end
       alias_method :inspect, :to_s
     end
@@ -568,7 +568,7 @@ class DataWrapper
       data.each do |line|
         line.chomp!
         values = eval("[#{line}]")
-        array << self.new(*values)
+        array &lt;&lt; self.new(*values)
       end
       data.close
       array
