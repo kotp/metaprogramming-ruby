@@ -312,7 +312,7 @@ class Rubyist
   @@country = "USA"
 end
 
-class Child < Rubyist
+class Child &lt; Rubyist
   @@city = "Nashville"
 end
 print Rubyist.class_variables # => [:@@geek, :@@country]
