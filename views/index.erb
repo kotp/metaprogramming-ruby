@@ -42,7 +42,7 @@ puts "Tell me my size!".writesize
 #   Rectangle.new([x_top, y_left], [x_bottom, y_right])
 class Rectangle
   def initialize(*args)
-    if args.size < 2  || args.size > 3
+    if args.size &lt; 2  || args.size &gt; 3
       puts 'This method takes either 2 or 3 arguments'
     else
       if args.size == 2
@@ -426,14 +426,14 @@ end
 <h2>1.6 An Exercise</h2>
 <p>Suppose we have two CSV (comma-separated values) files with a descriptive header at the top, as follows:</p>
 
-<p>File: location.txt</p>
+<p>File: <b>location.txt</b></p>
 <pre>
 name,country
 "Matz", "USA"
 "Fabio Akita", "Brazil"
 "Peter Cooper", "UK"
 </pre>
-<p>File: twitter.txt</p>
+<p>File: <b>twitter.txt</b></p>
 <pre>
 twitterid,url
 "AkitaOnRails","http://www.akitaonrails.com/"
