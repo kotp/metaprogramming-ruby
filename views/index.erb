@@ -32,7 +32,32 @@ puts "Tell me my size!".writesize
 </pre>
 <p><b>Be careful with Open Classes</b>: If you casually add bits and pieces of functionality to classes, you can end up with bugs like, for example, defining your own <b>capitalize( )</b> method and inadvertently overwriting the original <b>capitalize( )</b> method in the class <b>String</b>.</p>
 
-<h3>1.1.4 Anonymous class</h3>
+<h3>1.1.4 Multiple 'Constructors'</h3>
+<p>There is no real "constructor" in Ruby. The concept is certainly there because objects have to be instantiated and initialized, but the behaviour is somewhat different. What if we want to have multiple constructors for an object?</p>
+<p>Following is a contrived example of a Rectangle class that represents a rectangular shape on a grid. You can instantiate a Rectangle by one of two ways: by passing in the coordinates of its top-left and bottom-right corners, or by passing in its top-left corner along with its length and width. There's only one <b>initialize</b> method, but you can act as though there were two.</p>
+<pre>
+# The Rectangle constructor accepts arguments in either
+# of the following forms:
+#   Rectangle.new([x_top, y_left], length, width)
+#   Rectangle.new([x_top, y_left], [x_bottom, y_right])
+class Rectangle
+  def initialize(*args)
+    if args.size < 2  || args.size > 3
+      puts 'This method takes either 2 or 3 arguments'
+    else
+      if args.size == 2
+        puts 'Two arguments'
+      else
+        puts 'Three arguments'
+      end
+    end
+  end
+end
+Rectangle.new([10, 23], 4, 10)
+Rectangle.new([10, 23], [14, 13])
+</pre>
+
+<h3>1.1.5 Anonymous class</h3>
 <p><span style="color:brown;">An anonymous class is also known as a singleton class, eigenclass, ghost class, metaclass or an uniclass</span>.</p>
 <p><em>Each object in Ruby has its own anonymous class, a class that can have methods, but is only attached to the object itself</em>: When <em>we add a method to a specific object</em>, Ruby inserts a new, anonymous class into the inheritance hierarchy as a container to hold these types of methods. What's important to understand is that the anonymous class is a regular class which is <em>hidden</em>. It has no name and is not accessible through a constant like other classes. You can't instantiate a new object from it.</p>
 <p>Here are some ways by which you can define an anonymous class:</p>
@@ -398,7 +423,7 @@ end
 </pre>
 <p>Observe that the code in the block sees the <b>person</b> variable that was around when the block was defined, <em>not the</em> method’s <b>person</b> variable. Hence a block captures the local bindings and carries them along with it. You can also define additional bindings inside the block, but they disappear after the block ends.</p>
 
-<h2>An Exercise</h2>
+<h2>1.6 An Exercise</h2>
 
 <h2>1.7 Scope</h2>
 
