@@ -201,7 +201,7 @@ Rubyist.new.anything(3, 4) { something } # => Called anything with [3, 4] and #&
 <p>To remove existing methods, you can use the <b>remove_method</b> within the scope of a given class. If a method with the same name is defined for an ancestor of that class, the ancestor class method is <em>not removed</em>. The <b>undef_method</b>, by contrast, prevents the specified class from responding to a method call even if a method with the same name is defined in one of its ancestors.</p>
 <pre>
 class Rubyist
-  def method_missing(m, *args, &block)
+  def method_missing(m, *args, &amp;block)
     puts "Method Missing: Called #{m} with #{args.inspect} and #{block}"
   end
   
