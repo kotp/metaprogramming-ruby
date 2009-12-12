@@ -11,3 +11,7 @@ end
 get '/metaprogramming_ruby_2' do
   erb :metaprogramming_ruby_2
 end
+
+get '/metaprogramming_ruby_3' do
+  erb :metaprogramming_ruby_3
+end

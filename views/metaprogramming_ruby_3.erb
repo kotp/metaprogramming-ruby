@@ -1,0 +1,453 @@
+<div>
+<h1>Metaprogramming in Ruby</h1>
+
+<h3>1.3.6 eval</h3>
+<p>The module <b>Kernel</b> has the <b>eval()</b> method and is used to <span style="color:brown;">execute code in a string</span>. The <b>eval()</b> method can evaluate strings spanning many lines, making it possible to execute an entire program embedded in a string. <b>eval()</b> is slow - calling <b>eval()</b> effectively compiles the code in the string before executing it. But, even worse, <b>eval()</b> can be dangerous. If there's any chance that external data - stuff that comes from outside your application - can wind up inside the parameter to <b>eval()</b>, then you have a security hole, because that external data may end up containing arbitrary code that your application will blindly execute. <span style="color:brown;"><em><b>eval()</b> is now considered a method of last resort</em></span>.</p>
+<pre>
+str = "Hello"
+puts eval("str + ' Rubyist'") # => "Hello Rubyist"
+</pre>
+
+<h3>1.3.7 instance_eval, module_eval, class_eval</h3>
+<p><b>instance_eval()</b>, <b>module_eval()</b> and <b>class_eval()</b> are special types of <b>eval()</b>.</p>
+
+<h4>1.3.7.1 instance_eval</h4>
+<p>The class <b>Object</b> has an <b>instance_eval()</b> public method which can be called from a <span style="color:brown;">specific object</span>. It provides access to the instance variables of that object. It can be called either with a block or with a string.</p>
+<pre>
+class Rubyist
+  def initialize
+    @geek = "Matz"
+  end
+end
+obj = Rubyist.new
+# instance_eval can access obj's private methods 
+# and instance variables
+obj.instance_eval do
+  puts self # => #&lt;Rubyist:0x2ef83d0&gt;
+  puts @geek # => Matz
+end
+</pre>
+<p><em>The block that you pass to <b>instance_eval( )</b>helps you dip inside an object to do something in there. You can wreak havoc on encapsulation! No data is private data anymore.</em></p>
+<p><b>instance_eval</b> can also be used to <span style="color:brown;">add <em>class methods</em></span> as shown below:</p>
+<pre>
+class Rubyist
+end
+Rubyist.instance_eval do
+  def who
+    "Geek"
+  end
+end
+puts Rubyist.who # => Geek
+</pre>
+
+<h4>1.3.7.2 module_eval, class_eval</h4>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods can be used to <span style="color:brown;">add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
+<pre>
+class Rubyist
+  @@geek = "Ruby's Matz"
+end
+puts Rubyist.class_eval("@@geek") # => Ruby's Matz
+</pre>
+
+<p>The <b>module_eval</b> and <b>class_eval</b> methods can also be used to <span style="color:brown;">add instance methods to a module and a class</span>. In spite of their names, <b>module_eval</b> and <b>class_eval</b> are functionally identical and each may be used with ether a module or a class.</p>
+<pre>
+class Rubyist
+end
+Rubyist.class_eval do
+  def who
+    "Geek"
+  end
+end
+obj = Rubyist.new
+puts obj.who # => Geek
+</pre>
+
+<p><b>Note</b>: <span style="color:brown;"><b>class_eval</b> defines instance methods, and <b>instance_eval</b> defines class methods.</span></p>
+
+<h3>1.3.8 class_variable_get, class_variable_set</h3>
+<p>To add or retrieve the values of class variables, the methods <b>class_variable_get</b> (this takes a symbol argument representing the variable name and it returns the variable’s value) and <b>class_variable_set</b> (this takes a symbol argument representing a variable name and a second argument which is the value to be assigned to the variable) can be used.</p>
+<pre>
+class Rubyist
+  @@geek = "Ruby's Matz"
+end
+Rubyist.class_variable_set(:@@geek, 'Matz rocks!')
+puts Rubyist.class_variable_get(:@@geek) # => Matz rocks!
+</pre>
+
+<h3>1.3.9 class_variables</h3>
+<p>To obtain a list of class variable names as an array of strings, we can use the <b>class_variables</b> method.</p>
+<pre>
+class Rubyist
+  @@geek = "Ruby's Matz"
+  @@country = "USA"
+end
+
+class Child &lt; Rubyist
+  @@city = "Nashville"
+end
+print Rubyist.class_variables # => [:@@geek, :@@country]
+puts
+p Child.class_variables # => [:@@city]
+</pre>
+<p>You will observe from the program output that class variables are not shared with child classes.</p>
+
+<h3>1.3.10 instance_variable_get, instance_variable_set</h3>
+<p>One can retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>
+<pre>
+class Rubyist
+  def initialize(p1, p2)
+    @geek, @country = p1, p2
+  end
+end
+obj = Rubyist.new('Matz', 'USA')
+puts obj.instance_variable_get(:@geek) # => Matz
+puts obj.instance_variable_get(:@country) # => USA
+</pre>
+<p>You can also add instance variables to classes and objects <em>after</em> they have been created using <b>instance_variable_set</b>.</p>
+<pre>
+class Rubyist
+  def initialize(p1, p2)
+    @geek, @country = p1, p2
+  end
+end
+obj = Rubyist.new('Matz', 'USA')
+puts obj.instance_variable_get(:@geek) # => Matz
+puts obj.instance_variable_get(:@country) # => USA
+obj.instance_variable_set(:@country, 'Japan')
+puts obj.inspect # => #&lt;Rubyist:0x2ef8038 @country="Japan", @geek="Matz"&gt;
+</pre>
+
+<h3>1.3.11 const_get, const_set</h3>
+<p>One can similarly get and set constants using <b>const_get</b> and <b>const_set</b>.</p>
+<p><b>const_get</b> returns the value of the named constant, as shown below:</p>
+<pre>
+puts Float.const_get(:MIN) # => 2.2250738585072e-308
+</pre>
+<p><b>const_set</b> sets the named constant to the given object, returning that object. It creates a new constant if no constant with the given name previously existed, as shown below:</p>
+<pre>
+class Rubyist
+end
+puts Rubyist.const_set("PI", 22.0/7.0) # => 3.14285714285714
+</pre>
+
+<p>As <b>const_get</b> returns the value of a constant, you could use this method to get the value of a class name and then append the new method to create a new object from that class. This could even give you a way of creating objects at runtime by prompting the user to enter class names and method names. One can create a completely new class at runtime by using <b>const_set</b>.</p>
+<pre>
+# Let us call our new class 'Rubyist'
+# (we could have prompted the user for a class name)
+class_name = "rubyist".capitalize
+Object.const_set(class_name, Class.new)
+# Let us create a method 'who'
+# (we could have prompted the user for a method name)
+class_name = Object.const_get(class_name)
+puts class_name # => Rubyist
+class_name.class_eval do
+  define_method :who do |my_arg|
+    my_arg
+  end
+end
+obj = class_name.new
+puts obj.who('Matz') # => Matz
+</pre>
+
+<h2>1.4 Bindings</h2>
+<p>Entities like local variables, instance variables, self. . . are basically <em>names bound to objects</em>. We call them <b>bindings</b>.</p>
+
+<h2>1.5 Ruby Blocks and Bindings</h2>
+<p>A Ruby block contains both the code and a set of bindings. When you define a block, it simply grabs the bindings that are there at that moment, then it carries those bindings along when you pass the block into a method.</p>
+<pre>
+def who
+  person = "Matz"
+  yield("rocks")
+end
+person = "Matsumoto"
+who do |y| 
+  puts("#{person}, #{y} the world") # => Matsumoto, rocks the world
+  city = "Tokyo"
+end
+# puts city # => undefined local variable or method 'city' for main:Object (NameError)
+</pre>
+<p>Observe that the code in the block sees the <b>person</b> variable that was around when the block was defined, <em>not the</em> method’s <b>person</b> variable. Hence a block captures the local bindings and carries them along with it. You can also define additional bindings inside the block, but they disappear after the block ends.</p>
+
+<h2>1.6 Exercises</h2>
+<h3>1.6.1 Exercise 1</h3>
+<p>The Core Ruby course at RubyLearning.org runs for 8 weeks. Every week there is a quiz and marks are allocated out of 10. At the end of 8 weeks the student can find out his percentage score. For example, a students scores 5,10,10,10,10,10,10,10 marks in 8 weeks i.e. his percentage score is 93.75%</p>
+<p>Every Core Ruby batch has hundreds of students. Let us assume that we have a Ruby method that does this percentage calculation and returns the same value given the same set of arguments. We don't need to go on calculating the value each time. We only need to calculate the value the first time and then somehow associate that value with that set of arguments. Then the next time it gets called, if we have the same arguments we can use the previously stored value as the reurn value of this method this bypassing the need to do the calcualtions again.</p>
+<p>To start with, let us look at an existing class and method and then keep modifying them to achieve the above result.</p>
+<pre>
+class Result
+  def total(*scores)
+    percentage_calculation(*scores)
+  end
+  
+  private
+  
+  def percentage_calculation(*scores)
+    puts "Calculation for #{scores.inspect}"
+    scores.inject {|sum, n| sum + n } * (100.0/80.0)
+  end
+end
+
+r = Result.new
+puts r.total(5,10,10,10,10,10,10,10)
+puts r.total(5,10,10,10,10,10,10,10)
+puts r.total(10,10,10,10,10,10,10,10)
+puts r.total(10,10,10,10,10,10,10,10)
+</pre>
+<p>In the code above, we have a <b>Result</b> class and a <b>total</b> method that takes a list of <b>scores</b>. The <b>scores</b> represent the marks obtained by a student in each of the 8 quizzes in the course. The private method <b>percentage_calculation</b> does the actual percentage calculation. Finally, we call <b>total</b> method 4 times. The first two and the last two have the same set of scores. When we run our code we get the following output:</p>
+<pre>
+Calculation for [5, 10, 10, 10, 10, 10, 10, 10]
+93.75
+Calculation for [5, 10, 10, 10, 10, 10, 10, 10]
+93.75
+Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
+100.0
+Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
+100.0
+</pre>
+<p>We called the <b>total</b> method 4 times and that in turn also called the <b>percentage_calculation</b> method 4 times. <span style="color:brown;">We are now going to try and reduce the number of calls to the <b>percentage_calculation</b> method</span>.</p>
+<p>The first way to reduce the number of calls to the <b>percentage_calculation</b> method is to somehow store the previous results in memory. For this, we shall define a hash named <b>mem</b> and then use the <b>mem</b> hash in the <b>total</b> method, as shown in the modified code of the class <b>Result</b> below.</p>
+<pre>
+class Result
+  def initialize
+    @mem = {}
+  end
+  def total(*scores)
+    if @mem.has_key?(scores)
+      @mem[scores]
+    else
+      @mem[scores] = percentage_calculation(*scores)
+    end
+  end
+  
+  private
+  
+  def percentage_calculation(*scores)
+    puts "Calculation for #{scores.inspect}"
+    scores.inject {|sum, n| sum + n } * (100.0/80.0)
+  end
+end
+
+r = Result.new
+puts r.total(5,10,10,10,10,10,10,10)
+puts r.total(5,10,10,10,10,10,10,10)
+puts r.total(10,10,10,10,10,10,10,10)
+puts r.total(10,10,10,10,10,10,10,10)
+</pre>
+
+<h3>1.6.2 Exercise 2</h3>
+<p>Suppose we have two CSV (comma-separated values) files with a descriptive header at the top, as follows:</p>
+
+<p>File: <b>location.txt</b></p>
+<pre>
+name,country
+"Matz", "USA"
+"Fabio Akita", "Brazil"
+"Peter Cooper", "UK"
+</pre>
+<p>File: <b>twitter.txt</b></p>
+<pre>
+twitterid,url
+"AkitaOnRails","http://www.akitaonrails.com/"
+"peterc","http://www.petercooper.co.uk/"
+</pre>
+
+<p>Let us start by writing a class and storing it in a file <b>datawrapper.rb</b>. We'll call our class <b>DataWrapper</b> and also define a <em>class method</em> called <b>wrap</b> which will take a filename as a parameter and build a class from it. The first line of the above two text files have a comma-separated list of attribute names. Furthermore, we want to treat the file as an array of data items, reading it into an array of objects.</p>
+<pre>
+# file: datawrapper.rb
+class DataWrapper
+   def self.wrap(file_name)
+     data = File.new(file_name)
+     header = data.gets.chomp
+     data.close
+     puts header # => name,country
+     # in the end we return the class name
+  end
+end
+</pre>
+
+<p>Now let's start writing a small program <b>testdatawrapper.rb</b> that uses the above. Let's read our <b>location.txt</b> file.</p>
+<pre>
+#testdatawrapper.rb
+require 'datawrapper'
+DataWrapper.wrap("location.txt")
+</pre>
+
+<p>Coming back to our <b>datawrapper.rb</b> program, let's create a new class and give it a suitable name:</p>
+<pre>
+# file: datawrapper.rb
+class DataWrapper
+  def self.wrap(file_name)
+    data = File.new(file_name)
+    header = data.gets.chomp
+    data.close
+    class_name = File.basename(file_name, ".txt").capitalize  
+    klass = Object.const_set(class_name, Class.new)
+    klass # we return the class name
+  end
+end
+</pre>
+
+<p>The variable <b>klass</b> refers to our new class. If the file was called <b>location.txt</b>, the class will be named <b>Location</b>.</p>
+<p>Let us run our modified program <b>testdatawrapper.rb</b>.</p>
+<pre>
+#testdatawrapper.rb
+require 'datawrapper'
+data = DataWrapper.wrap("location.txt") # Capture return value and
+puts data # => Location
+</pre>
+
+<p>Now, let's start to add attributes to it. The first line of data is a list of names. Let's turn it into a simple array of strings by splitting on the comma character. The modified <b>datawrapper.rb</b> program is:</p>
+<pre>
+# file: datawrapper.rb
+class DataWrapper
+  def self.wrap(file_name)
+    data = File.new(file_name)
+    header = data.gets.chomp
+    data.close
+    class_name = File.basename(file_name, ".txt").capitalize  
+    klass = Object.const_set(class_name, Class.new)
+    # get attribute names
+    names = header.split(",")
+    p names # => ["name", "country"]
+    klass # we return the class name
+  end
+end
+</pre>
+
+<p>Now we can use <b>class_eval</b> in the context of our new class <b>klass</b>. At the same time, we'll define an <b>initialize</b> method. Also, we shall write a <b>to_s</b> method so that we can use <b>puts</b>; and let's also <b>alias</b> that to <b>inspect</b> for convenience. The modified <b>datawrapper.rb</b> program is:</p>
+<pre>
+# file: datawrapper.rb
+class DataWrapper
+  def self.wrap(file_name)
+    data = File.new(file_name)
+    header = data.gets.chomp
+    data.close
+    class_name = File.basename(file_name, ".txt").capitalize  
+    klass = Object.const_set(class_name, Class.new)
+    # get attribute names
+    names = header.split(",")
+    klass.class_eval do
+      attr_accessor *names
+      define_method(:initialize) do |*values|
+        names.each_with_index do |name, i|
+          instance_variable_set("@"+name, values[i])
+        end
+      end
+      define_method(:to_s) do
+        str = "&lt;#{self.class}:"
+        names.each {|name| str &lt;&lt; " #{name}=#{self.send(name)}" }
+        str + "&gt;"
+      end
+      alias_method :inspect, :to_s
+    end
+    klass # we return the class name
+  end
+end
+</pre>
+
+
+<p>Next, we write a class-level method that does a <b>read</b> of an entire file and returns an array of objects representing its contents. Because it's a class method, we're just adding a singleton onto an object <b>klass</b> which happens to be a class. The modified <b>datawrapper.rb</b> program is:</p>
+<pre>
+# file: datawrapper.rb
+class DataWrapper
+  def self.wrap(file_name)
+    data = File.new(file_name)
+    header = data.gets.chomp
+    data.close
+    class_name = File.basename(file_name, ".txt").capitalize  
+    klass = Object.const_set(class_name, Class.new)
+    # get attribute names
+    names = header.split(",")
+    klass.class_eval do
+      attr_accessor *names
+      define_method(:initialize) do |*values|
+        names.each_with_index do |name, i|
+          instance_variable_set("@"+name, values[i])
+        end
+      end
+      define_method(:to_s) do
+        str = "&lt;#{self.class}:"
+        names.each {|name| str &lt;&lt; " #{name}=#{self.send(name)}" }
+        str + "&gt;"
+      end
+      alias_method :inspect, :to_s
+    end
+    def klass.read
+      array = []
+      data = File.new(self.to_s.downcase+".txt")
+      data.gets  # throw away header
+      data.each do |line|
+        line.chomp!
+        values = eval("[#{line}]")
+        array &lt;&lt; self.new(*values)
+      end
+      data.close
+      array
+    end
+    klass # we return the class name
+  end
+end
+</pre>
+
+<p>Let us now modify our program <b>testdatawrapper.rb</b> and test out the program <b>datawrapper.rb</b>.</p>
+<pre>
+#testdatawrapper.rb
+require 'datawrapper'
+klass = DataWrapper.wrap("location.txt")
+list = klass.read
+list.each do |location|
+  puts("#{location.name} is from the #{location.country}")
+end
+</pre>
+
+<p>Now let's look at a totally different data file i.e. <b>twitter.txt</b>. Our <b>testdatawrapper.rb</b> is as follows:</p>
+<pre>
+#testdatawrapper.rb
+require 'datawrapper'
+klass = DataWrapper.wrap("twitter.txt")
+list = klass.read
+list.each do |twitter|
+  puts("#{twitter.twitterid}'s site is #{twitter.url}")
+end
+</pre>
+
+<p>Even if we add another field to the data file, none of our code in the program <b>datawrapper.rb</b> would have to change. This is a an exercise and an example of the kind of metaprogramming that Ruby allows.</p>
+
+<h2>1.7 Scope</h2>
+
+<h2>References</h2>
+<ul>
+<li><a href="http://www.devsource.com/c/a/Languages/An-Exercise-in-Metaprogramming-with-Ruby/">An Exercise in Metaprogramming with Ruby</a>.</li>
+<li><a href="http://pragprog.com/titles/ppmetr/metaprogramming-ruby">Metaprogramming Ruby</a> - Publisher: The Pragmatic Programmers, Author: Paolo Perrotta.</li>
+<li><a href="http://yehudakatz.com/2009/11/15/metaprogramming-in-ruby-its-all-about-the-self/">Metaprogramming in Ruby: It’s All About the Self</a>.</li>
+<li><a href="http://pragprog.com/titles/ruby3/programming-ruby-1-9">Programming Ruby 1.9</a> - Publisher: The Pragmatic Programmers, Author: Dave Thomas.</li>
+<li><a href="http://ruby-metaprogramming.heroku.com/html/seeingMetaclassesClearly.html">Seeing Metaclasses Clearly</a>.</li>
+<li><a href="http://www.sapphiresteel.com/The-Book-Of-Ruby">The Book Of Ruby</a> - Author: Huw Collingbourne.</li>
+<li><a href="http://pragprog.com/screencasts/v-dtrubyom/the-ruby-object-model-and-metaprogramming">The Ruby Object Model and Metaprogramming screencasts with Dave Thomas</a>.</li>
+<li><a href="http://www.contextualdevelopment.com/articles/2008/ruby-singleton">Understanding Ruby Singleton Classes</a>.</li>
+</ul>
+
+<p class="pre-footer align-right">
+  <b>
+    <a href="http://metaprogramming-ruby.heroku.com/">&lt;Home | </a>
+    <a href="http://metaprogramming-ruby.heroku.com/metaprogramming_ruby_2">Page 2&gt;</a>
+  </b>
+</p>
+
+<p class="copyright"><b>Note</b>: The Ruby Logo is Copyright (c) 2006, Yukihiro Matsumoto. The material in these study notes is drawn primarily from the above references. Our acknowledgment and thanks to all of them.</p>
+</div>
+<!-- Hit Tail (Invisible code) -->
+<script src="http://13043.hittail.com/mlt.js" type="text/javascript"></script>
+<!-- Hit Tail (Invisible code) -->
+
+<!-- Google Analytics code -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-59044-10");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics code ends -->
