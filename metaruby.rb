@@ -7,3 +7,7 @@ require 'sinatra'
 get '/' do
   erb :index
 end
+
+get '/metaprogramming_ruby_2' do
+  erb :metaprogramming_ruby_2
+end
