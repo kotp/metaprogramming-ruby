@@ -41,7 +41,7 @@ puts Rubyist.who # => Geek
 </pre>
 
 <h4>1.3.7.2 module_eval, class_eval  <img src="http://rubylearning.com/images/icon-flag.gif" alt="Important" title="Important" /></h4>
-<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects.</p>
+<p>The <b>module_eval</b> and <b>class_eval</b> methods operate on modules and classes rather than on objects. The <b>class_eval</b> is defined as an alias of <b>module_eval</b>.</p>
 <p>The <b>module_eval</b> and <b>class_eval</b> methods can be used to <span style="color:brown;">add and retrieve the values of class variables from <em><b>outside</b> a class</em></span>.</p>
 <pre>
 class Rubyist
@@ -90,7 +90,7 @@ print Rubyist.class_variables # => [:@@geek, :@@country]
 puts
 p Child.class_variables # => [:@@city]
 </pre>
-<p>You will observe from the program output that class variables are not shared with child classes.</p>
+<p>You will observe from the program output that the method <b>Child.class_variables</b> gives us the class variables (<b>@@city</b>) defined in the class and not the inherited ones(<b>@@geek, @@country</b>).</p>
 
 <h3>1.3.10 instance_variable_get, instance_variable_set</h3>
 <p>One can retrieve the value of instance variables using the <b>instance_variable_get</b> method.</p>

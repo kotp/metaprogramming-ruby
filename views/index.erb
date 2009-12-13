@@ -1,14 +1,17 @@
 <div>
 <h1>Metaprogramming in Ruby</h1>
 <h2>0.0 Preamble</h2>
-<p>These study notes should be used along with Satoshi Asakawa's excellent course on <a href="http://ruby-metaprogramming.heroku.com/">Ruby Metaprogramming</a>.</p>
+<p>These study notes should be used along with Satoshi Asakawa's excellent course on <a href="http://ruby-metaprogramming.heroku.com/">Ruby Metaprogramming</a>. The programs in these study notes have been tested using the following Ruby version:</p>
+<pre>
+ruby 1.9.1p243 (2009-07-16 revision 24175) [i386-mingw32]
+</pre>
 
 <h2>1.0 Ruby Metaprogramming</h2>
 <p><strong>Metaprogramming</strong> in Ruby is <span style="color:brown;">writing code that manipulates language constructs (like classes, modules, and instance variables) at runtime</span>. It is even possible to enter new Ruby code at runtime and execute the new code without restarting the program.</p>
 
 <h2>1.1 Instance variables, Methods and Classes</h2>
 <h3>1.1.1 An object's Instance variables / Methods</h3>
-<p>Instance variables just <em>spring into existence when you assign them a value</em>, so you can have objects of the same class that carry different sets of instance variables.</p>
+<p>Instance variables just <em>spring into existence when you use them</em>, so you can have objects of the same class that carry different sets of instance variables.</p>
 <p>On the inside, an object simply contains its instance variables and a reference to its class. Thus, <span style="color:brown;">an object's instance variables live in the object itself, and an object's methods live in the object's class (where they're called the "instance methods" of the class)</span>. That's why objects of the same class share methods, but they don't share instance variables.</p>
 
 <h3>1.1.2 Classes</h3>
@@ -32,9 +35,8 @@ puts "Tell me my size!".writesize
 </pre>
 <p><b>Warning</b>: Be careful with Open Classes, if you casually add bits and pieces of functionality to classes, you can end up with bugs like, for example, defining your own <b>capitalize( )</b> method and inadvertently overwriting the original <b>capitalize( )</b> method in the class <b>String</b>.</p>
 
-<h3>1.1.4 Multiple 'Constructors'</h3>
-<p>There is no real "constructor" in Ruby. The concept is certainly there because objects have to be instantiated and initialized, but the behaviour is somewhat different. What if we want to have multiple constructors for an object?</p>
-<p>Following is a contrived example of a Rectangle class that represents a rectangular shape on a grid. You can instantiate a Rectangle by one of two ways: by passing in the coordinates of its top-left and bottom-right corners, or by passing in its top-left corner along with its length and width. There's only one <b>initialize</b> method, but you can act as though there were two.</p>
+<h3>1.1.4 Multiple initialize methods?</h3>
+<p>Following is a contrived example of a Rectangle class that represents a rectangular shape on a grid. You can instantiate a Rectangle by one of two ways: by passing in the coordinates of its top-left and bottom-right corners, or by passing in its top-left corner along with its length and width. In Ruby there is only one <b>initialize</b> method, but in this example you can act as though there were two.</p>
 <pre>
 # The Rectangle constructor accepts arguments in either
 # of the following forms:
