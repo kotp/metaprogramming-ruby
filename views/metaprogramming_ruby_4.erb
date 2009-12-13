@@ -6,8 +6,8 @@
 <p>We all know that the Core Ruby course at RubyLearning.org runs for 8 weeks. Every week there is a quiz and marks are allocated out of 10. At the end of 8 weeks the student can find out his percentage score. For example, if a students scores 5,10,10,10,10,10,10,10 marks in 8 weeks i.e. his percentage score is 93.75%</p>
 <p><b>Problem Statement</b>: Every Core Ruby batch has hundreds of students. Let us assume that we have a Ruby method that does this percentage calculation and returns the same value given the same set of arguments. We don't need to go on calculating the value each time. We only need to calculate the value the first time and then somehow associate that value with that set of arguments. Then the next time it gets called, if we have the same arguments, we can use the previously stored value as the return value of this method thus bypassing the need to do the calculations again. <em>We need to develop a solution to address this problem using Metaprogramming techniques</em>.</p>
 
-<h4>1.6.1.1 Normal Solution</h4>
-<p>To start with, let us look at an existing class and method and then keep modifying them to achieve the above result.</p>
+<h4>1.6.1.1 Existing class and method</h4>
+<p>To start with, let us look at the existing class and method and then keep modifying it to achieve the above result.</p>
 <pre>
 class Result
   def total(*scores)
@@ -40,6 +40,8 @@ Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
 100.0
 </pre>
 <p>Looking at the above output, we realize that we have called the <b>total</b> method 4 times and that in turn also called the <b>percentage_calculation</b> method 4 times. <span style="color:brown;">We are now going to try and reduce the number of calls to the <b>percentage_calculation</b> method</span>.</p>
+
+<h4>1.6.1.2 Normal Solution</h4>
 <p>One way to reduce the number of calls to the <b>percentage_calculation</b> method is to somehow store the previous results in memory. For this, we shall define a subclass named <b>MemoResult</b> that has a hash named <b>@mem</b> and then use the <b>@mem</b> hash in the <b>total</b> method, as shown in the modified code below:</p>
 <pre>
 class Result
@@ -86,8 +88,8 @@ Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
 </pre>
 <p>Observe that we have saved calling the <b>percentage_calculation(*scores)</b> method for the second and fourth call to <b>r.total</b>.</p>
 
-<h4>1.6.1.2 Solution using Class.new and define_method</h4>
-<p>The <b>MemoResult</b> class is intimately tied to its parent <b>Result</b> class. To avoid that, let us generate this subclass dynamically using whetever we have learnt so far in <strong>Ruby Metaprogramming</strong>.</p>
+<h4>1.6.1.3 Solution using Class.new and define_method</h4>
+<p>The <b>MemoResult</b> class above, is intimately tied to its parent <b>Result</b> class. To avoid that, let us generate this subclass dynamically using whetever we have learnt so far in <strong>Ruby Metaprogramming</strong>.</p>
 
 <p>To do that, let us write a method called <b>mem_result</b> that takes two parameters: the name of the parent class and the name of a method (the method will return the name of the class). Here's the code:</p>
 <pre>
