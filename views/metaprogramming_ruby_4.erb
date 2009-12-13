@@ -38,18 +38,11 @@ Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
 100.0
 </pre>
 <p>Looking at the above output, we realize that we have called the <b>total</b> method 4 times and that in turn also called the <b>percentage_calculation</b> method 4 times. <span style="color:brown;">We are now going to try and reduce the number of calls to the <b>percentage_calculation</b> method</span>.</p>
-<p>The first way to reduce the number of calls to the <b>percentage_calculation</b> method is to somehow store the previous results in memory. For this, we shall define a hash named <b>mem</b> and then use the <b>mem</b> hash in the <b>total</b> method, as shown in the modified code of the class <b>Result</b> below:</p>
+<p>One way to reduce the number of calls to the <b>percentage_calculation</b> method is to somehow store the previous results in memory. For this, we shall define a subclass named <b>MemoResult</b> that has a hash named <b>@mem</b> and then use the <b>@mem</b> hash in the <b>total</b> method, as shown in the modified code below:</p>
 <pre>
 class Result
-  def initialize
-    @mem = {}
-  end
   def total(*scores)
-    if @mem.has_key?(scores)
-      @mem[scores]
-    else
-      @mem[scores] = percentage_calculation(*scores)
-    end
+    percentage_calculation(*scores)
   end
   
   private
@@ -60,12 +53,38 @@ class Result
   end
 end
 
-r = Result.new
+class MemoResult &lt; Result
+  def initialize
+    @mem = {}
+  end
+  def total(*scores)
+    if @mem.has_key?(scores)
+      @mem[scores]
+    else
+      @mem[scores] = super
+    end
+  end
+end
+
+r = MemoResult.new
 puts r.total(5,10,10,10,10,10,10,10)
 puts r.total(5,10,10,10,10,10,10,10)
 puts r.total(10,10,10,10,10,10,10,10)
 puts r.total(10,10,10,10,10,10,10,10)
 </pre>
+
+<p>The <b>Hash</b> class has a <b>has_key?</b> method that returns <b>true</b> if the given key is present in <b>@mem</b>. In the above program, if <b>has_key?</b> is <b>true</b> then we return the value available in <b>@mem</b> for that key otherwise we do the calculation by calling <b>percentage_calculation(*scores)</b> and storing the value in <b>@mem</b>. Let us see the output:</p>
+<pre>
+Calculation for [5, 10, 10, 10, 10, 10, 10, 10]
+93.75
+93.75
+Calculation for [10, 10, 10, 10, 10, 10, 10, 10]
+100.0
+100.0
+</pre>
+<p>Observe that we have saved calling the <b>percentage_calculation(*scores)</b> method for the second and fourth call to <b>r.total</b>.</p>
+
+<p>In the <b>MemoResult</b> class we have </p>
 
 <p class="pre-footer align-right">
   <b>
