@@ -96,7 +96,7 @@ puts obj.send( :say_hello, 'Matz')
 </pre>
 
 <h3>1.3.3 define_method  <img src="http://rubylearning.com/images/icon-flag.gif" alt="Important" title="Important" /></h3>
-<p>The <b>Module#define_method( )</b> is a private instance method of the class <b>Module</b>. You can dynamically define an instance method in the receiver with <b>Module#define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
+<p>The <b>Module#define_method( )</b> is a private instance method of the class <b>Module</b>. <span style="color:brown;">The <b>define_method</b> is only defined on classes and modules</span>. You can dynamically define an <em>instance method</em> in the receiver with <b>define_method( )</b>. You just need to provide a method name and a block, which becomes the method body:</p>
 <pre>
 class Rubyist
   define_method :hello do |my_arg|
