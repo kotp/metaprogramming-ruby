@@ -217,13 +217,13 @@ result.rb:21:in `total': super: no superclass method `total' (NoMethodError)
 <p>The line <b>mem[args] = super</b> is trying to call the <b>total</b> method of the class <b>Result</b>, from the anonymous class. <span style="color:brown;">The problem is that we have defined our <b>total</b> method directly in class <b>Result</b>. We have said <b>obj.class</b> which is class <b>Result</b> and that's not going to work. What we need to do is create an anonymous class and put our <b>total</b> method in this anonymous class. Also, our anonymous class needs to be a subclass of our class <b>Result</b></span>.</p>
 <p>Let us create our anonymous class as follows:</p>
 <pre>
-  anon = class << obj
+  anon = class &lt;&lt; obj
     self
   end
 </pre>
 <p><b>self</b> above gives us our anonymous class object. This object is then being referenced by our variable <b>anon</b>. Most rubyists would put this code in one line to indicate that they are extracting the ghost class, as follows:</p>
 <pre>
-anon = class << obj; self; end
+anon = class &lt;&lt; obj; self; end
 </pre>
 <p>Having got our anonymous class object, we shall use it in our <b>class_eval</b> method, as shown in the code below:</p>
 <pre>
@@ -241,7 +241,7 @@ class Result
 end
 
 def mem_result(obj, method)
-  anon = class << obj; self; end
+  anon = class &lt;&lt; obj; self; end
   anon.class_eval do
     mem ||= {}
     define_method(method) do |*args|
